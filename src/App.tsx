@@ -5,9 +5,15 @@ import { Button } from './ui/button';
 
 import s from './App.module.css';
 
+const WORDS_LIST_KEY = 'wordsList';
+
 function App() {
   const [inputValue, setInputValue] = useState<InputValue>('');
-  const [wordsForLearn, setWordsForLearn] = useState<InputValue[]>([]);
+  const wordsList = JSON.parse(localStorage.getItem(WORDS_LIST_KEY) || '[]');
+  const [wordsForLearn, setWordsForLearn] = useState<Array<{
+    word: string;
+    translate: string;
+  }>>(wordsList);
 
   const changeHandler = (value: InputValue) => {
     setInputValue(value);
@@ -16,7 +22,10 @@ function App() {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setWordsForLearn(prev => [...prev, inputValue])
+    setWordsForLearn(prev => [...prev, {
+      word: String(inputValue),
+      translate: '',
+    }])
     setInputValue('')
   }
 
@@ -25,7 +34,7 @@ function App() {
       <div className={s.list}>
         {wordsForLearn.map(word => (
           <span>
-            {word}
+            {`${word.word}: ${word.translate}`}
           </span>
         ))}
       </div>
